@@ -1,0 +1,33 @@
+WsClient.js   
+var ws = new WebSocket("ws://127.0.0.1:9000/");      
+ws.onopen = function() {       
+   alert("Opened");       
+   ws.send("I'm client");       
+};       
+       
+ws.onmessage = function (evt) {        
+    alert(evt.data);       
+};       
+       
+ws.onclose = function() {       
+   alert("Closed");       
+};       
+       
+ws.onerror = function(err) {       
+   alert("Error: " + err);       
+};   
+   
+3.wsclient.js   
+   
+<!DOCTYPE html>   
+<html>   
+    <body>   
+        <h1>WebSocket</h1>   
+        <script src="WsClient.js"></script>   
+    </body>   
+</html> 
+
+
+
+
+进群交流QQ群号: 168108911

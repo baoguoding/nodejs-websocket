@@ -1,0 +1,40 @@
+﻿创建客户端socketIoClient.html    
+<html>  
+<head>  
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+    <!-- <script src="./js/jquery-1.3.1.min.js"></script> -->  
+    <script src="/js/socket.io.js"></script>
+	<script>
+		var iosocket = null;
+		window.onload=function(){
+			 iosocket = io.connect('http://localhost:9000/'); 
+			 iosocket.on('connect', function () { 
+				 alert('连接成功');
+				 iosocket.send('hello,我是ioclient');
+			 });
+			 iosocket.on('message', function(message) {  
+                    //alert('服务端传来:'+message);
+					var chatroom = document.getElementById('chatroom');
+					chatroom.innerHTML += message+'<br/>';
+             });  
+			 iosocket.on('disconnect', function() {  
+                    alert('服务端关闭');  
+             });  
+		}
+		function say(){
+				iosocket.send(myform.sayinput.value);  
+			}
+	</script>
+</head>
+<body>
+	<div id='chatroom' style='width:400px;height:300px;overflow:auto;border:1px solid blue'></div>
+		<form name="myform">
+			<input type='text' name='sayinput'/>
+			<input type='button' value='say' onclick='say()'/>
+		</form>
+</body>
+</html>
+
+
+
+进群交流QQ群号: 168108911

@@ -1,0 +1,23 @@
+﻿以下代码为客户端部分代码，具体细节请结合参考视频讲解
+
+<script src="WsClient.js"></script>
+		<script>
+			function say(){
+				ws.send(myform.sayinput.value);  
+			}
+		</script>
+	</head>
+    <body>
+        <h1>WebSocket</h1>
+        <div id='chatroom' style='width:400px;height:300px;overflow:auto;border:1px solid blue'></div>
+		<form name="myform">
+			<input type='text' name='sayinput'/>
+			<input type='button' value='say' onclick='say()'/>
+		</form>
+    </body>
+</html>
+
+
+
+
+进群交流QQ群号: 168108911

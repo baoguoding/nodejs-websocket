@@ -1,0 +1,23 @@
+﻿1.安装ws(IE8不支持)   
+G:\www\nodejs\socket>npm install ws --save-dev   
+2.WsServer.js   
+var WebSocketServer = require('ws').Server   
+  , wss = new WebSocketServer({port: 9000});   
+wss.on('connection', function(ws) {   
+    console.log(ws+'上线');   
+    ws.on('message', function(message) {   
+        console.log('received: %s', message);   
+    });   
+    ws.send('something');   
+    ws.on('close', function(){   
+        global.gc();    //调用内存回收   
+        console.log("leave");   
+    });   
+});   
+   
+//运行：node --expose-gc WsServer.js   //让global.gc()可以执行   
+
+
+
+
+进群交流QQ群号: 168108911

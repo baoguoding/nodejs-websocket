@@ -1,0 +1,108 @@
+﻿Socket.io
+
+node.js提供了高效的服务端运行环境，但是由于浏览器端对HTML5的支持不一，为了兼容所有浏览器，提供卓越的实时的用户体验，并且为程序员提供客户端与服务端一致的编程体验，于是socket.io诞生。Socket.io将Websocket和轮询 （Polling）机制以及其它的实时通信方式封装成了通用的接口，并且在服务端实现了这些实时机制的相应代码。也就是说，Websocket仅仅是 Socket.io实现实时通信的一个子集。那么，Socket.io都实现了Polling中的那些通信机制呢？包括：
+Adobe® Flash® Socket
+AJAX long polling
+AJAX multipart streaming
+Forever Iframe
+JSONP Polling
+
+1.安装socket.io    
+G:\www\nodejs\socket>npm install "socket.io" --save-dev    
+    
+2.安装Express    
+G:\www\nodejs\socket>npm install express --save-dev    
+    
+3.创建服务端SocketIoServer.js    
+var app = require('express')();    
+var http = require('http').Server(app);    
+var io = require('socket.io')(http);    
+var  fs=  require('fs');    
+    
+app.get('/', function(req, res){    
+    function recall(data){    
+            res.send(data.toString());    
+        }    
+        fs.readFile('./socketIoClient.html', function(err,  data)  {    
+            if  (err)  {    
+              console.log("bbbbb:"+err);    
+              recall('文件不存在');    
+            }else{    
+              //console.log(data.toString());    
+              recall(data);    
+            }    
+        });    
+    //res.send('<h1>Welcome Realtime Server</h1>');    
+});    
+    
+app.get('/socketio/jquery-2.1.0.min.js',function(req,res){    
+    function recall(data){    
+            res.send(data.toString());    
+        }    
+        fs.readFile('./socketio/jquery-2.1.0.min.js', function(err,  data)  {    
+            if  (err)  {    
+              console.log("bbbbb:"+err);    
+              recall('文件不存在');    
+            }else{    
+              //console.log(data.toString());    
+              recall(data);    
+            }    
+        });    
+});    
+app.get('/socketio/socket.io.js',function(req,res){    
+    function recall(data){    
+            res.send(data.toString());    
+        }    
+        fs.readFile('./socketio/socket.io.js', function(err,  data)  {    
+            if  (err)  {    
+              console.log("bbbbb:"+err);    
+              recall('文件不存在');    
+            }else{    
+              //console.log(data.toString());    
+              recall(data);    
+            }    
+        });    
+});    
+    
+//在线用户    
+var onlineUsers = {};    
+//当前在线人数    
+var onlineCount = 0;    
+    
+io.on('connection', function(socket){    
+    console.log('有人连上来了');
+	//监听新用户加入  
+    //socket.on('login', function(obj){ 
+	socket.name=++ii;
+	onlineUsers[socket.name]=socket;
+        
+    //监听用户退出    
+    socket.on('disconnect', function(){    
+         console.log('有人退出'); 
+	 delete onlineUsers[socket.name];  
+    });    
+        
+    //监听用户发布聊天内容    
+    socket.on('message', function(obj){    
+        //向所有客户端广播发布的消息
+        console.log(obj.username+'说：'+obj.content);
+	sayall(msg,socket);
+    });    
+      
+}); 
+function sayall(msg,socket){
+	for(var key in onlineUsers){
+		if(onlineUsers[key]!=socket){
+			onlineUsers[key].send(msg);
+		}
+	}
+}
+    
+http.listen(9000, function(){    
+    console.log('listening on *:9000');    
+});
+
+
+
+
+进群交流QQ群号: 168108911
