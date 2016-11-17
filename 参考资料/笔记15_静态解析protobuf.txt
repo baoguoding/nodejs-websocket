@@ -1,0 +1,37 @@
+﻿node静态解析protobuf 
+1.npm install protobufjs -g
+2.安装pbjs 
+npm install pbjs -g
+
+ 
+3.user.proto 
+package protobuf; 
+  
+message User { 
+  required int32 uid = 1; 
+  required string uname = 2; 
+  required string pwd = 3; 
+} 
+ 
+4.编译: 
+pbjs user.proto -t commonjs > userproto.js 
+ 
+5. StaticPb.js
+var ProtoBuf = require("protobufjs"); 
+var User = require('./userproto1.js')['protobuf']['User']; 
+var user = new User({ 
+        'uid': 101, 
+        'uname': '你好', 
+        'pwd':'haha' 
+    }); 
+var buffer = user.encode();//编码 
+console.log('buffer='+buffer);   
+var msgbuf = buffer.toBuffer();//加密 
+console.log('msgbuf='+msgbuf); 
+ 
+//--------解码--------------------- 
+var userbuf = User.decode(msgbuf); 
+console.log(userbuf.uname);   
+
+
+进群交流QQ群号: 168108911

@@ -6,6 +6,8 @@
   "devDependencies": {
     "express": "^4.14.0",
     "net": "^1.0.2",
+    "pbjs": "0.0.3",
+    "protobufjs": "^5.0.1",
     "socket.io": "^1.5.1",
     "ws": "^1.1.1"
   }

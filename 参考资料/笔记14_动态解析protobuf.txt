@@ -1,0 +1,34 @@
+﻿node.js动态解析protobuf
+1.安装protobufjs
+npm install protobufjs --save-dev
+2.编写user.proto
+package protobuf;
+message User {
+  required int32 uid = 1;
+  required string uname = 2;
+  required string pwd = 3;
+}
+3.动态解析(DynamicPb.js)
+var fs = require("fs");
+ProtoBuf = require("protobufjs");
+userProtoStr = fs.readFileSync('./user.proto').toString();
+
+User = ProtoBuf.loadProto(userProtoStr).build('protobuf').User;
+
+user= new User();
+user.set('uid', 111);
+user.set('uname', '123456');
+user.set('pwd', 'aabbcc');
+
+//------------编码----------------
+var buffer = user.encode().toBuffer();
+
+//------------解码----------------
+
+var userInfo = User.decode(buffer);
+ 
+console.log(userInfo.get('uname'));
+
+
+
+进群交流QQ群号: 168108911

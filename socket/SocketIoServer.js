@@ -59,7 +59,7 @@ io.on('connection', function(socket){
     //监听用户发布聊天内容
     socket.on('message', function(msg){
         //向所有客户端广播发布的消息
-       console.log(socket.username+'说：'+msg);
+       //console.log(socket.username+'说：'+msg);
        sayall(msg,socket);
     });
 
