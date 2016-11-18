@@ -1,0 +1,144 @@
+﻿1.Express项目中安装WS 
+2.Express项目中安装protobufjs 
+3.下载三个js文件：下载地址:https://github.com/dcodeIO 
+protobuf.js 
+bytebuffer.js 
+long.js 
+搜索找到三个js文件：bytebuffer.min.js,long.min.js,protobuf.min.js 
+项目的public下创建js文件夹,拷贝：D:\tools\protobuf\jsprotobuf\TestJsProtobuf\lib下 
+ByteBufferAB.min.js 
+Long.min.js 
+ProtoBuf.min.js 
+三个js文件到新创建的js文件夹下 
+4.js下创建WsClient.js 
+var ws = new WebSocket("ws://127.0.0.1:9000/");    
+ws.onopen = function() {     
+   alert("Opened");     
+   //ws.send("I'm client");  
+   ws.send(buffer);      //改这行 
+};     
+     
+ws.onmessage = function (evt) {      
+    var chatroom = document.getElementById('chatroom');
+    var bl = evt.data; // bl是要转换的blob
+    var fr = new FileReader();
+    var ab=null;
+    fr.onload = function(){
+        ab = this.result; // ab是转换后的结果
+        var user = UserModel.decode(ab);
+        chatroom.innerHTML += '<br/>'+user.uname;
+    }
+    fr.readAsArrayBuffer(bl);    
+};      
+     
+ws.onclose = function() {     
+   alert("Server Closed");     
+};     
+     
+ws.onerror = function(err) {     
+   alert("Error: " + err);     
+}; 
+5.修改路由：routes/index.js，添加： 
+router.get('/socketclient',function(req,res){ 
+    res.render('socketclient'); 
+}); 
+ 
+6.views下创建socketclient.ejs 
+<!DOCTYPE html> 
+<html> 
+    <head> 
+        <script src="/js/long.min.js"></script>  
+        <script src="/js/ByteBufferAB.min.js"></script>  
+        <script src="/js/ProtoBuf.min.js"></script> 
+        <script> 
+        alert(dcodeIO); 
+        alert(dcodeIO.ProtoBuf); 
+            if (typeof dcodeIO === 'undefined' || !dcodeIO.ProtoBuf) { 
+    alert('出错'); 
+    throw(new Error("ProtoBuf.js is not present. Please see www/index.html for manual setup instructions.")); 
+     
+} 
+// 创建ProtoBuf 
+var ProtoBuf = dcodeIO.ProtoBuf; 
+ 
+ 
+var UserModel = ProtoBuf.loadProtoFile("./user.proto").build('protobuf.User'); 
+user = new UserModel(); 
+user.uid=111; 
+user.uname='pwpwpw'; 
+user.pwd='aaa'; 
+alert(user.pwd); 
+//------发送代码------- 
+var buffer = user.toArrayBuffer(); 
+        </script> 
+        <script src="/js/WsClient.js"></script> 
+        <script> 
+            function say(){ 
+                ws.send(myform.sayinput.value);   
+            } 
+        </script> 
+    </head> 
+    <body> 
+        <h1>WebSocket</h1> 
+        <div id='chatroom' style='width:400px;height:300px;overflow:auto;border:1px solid blue'></div> 
+        <form name="myform"> 
+            <input type='text' name='sayinput'/> 
+            <input type='button' value='say' onclick='say()'/> 
+        </form> 
+    </body> 
+</html> 
+7.项目根目录下创建WsSocket.js,也可以拷贝到index.js中 
+WsSocket.js(可以把代码拷贝到routers/index.js中) 
+var WebSocketServer = require('ws').Server 
+  , wss = new WebSocketServer({port: 9000}); 
+var ProtoBuf = require("protobufjs"); 
+var User = require('./public/userproto1.js')['protobuf']['User']; 
+ 
+var clientMap = new Object(); 
+var ii=0; 
+wss.on('connection', function(ws) { 
+    console.log(ws+'上线'); 
+    ws.name=++ii; 
+    clientMap[ws.name]=ws; 
+    ws.on('message', function(message) { 
+        console.log('received: %s', message); 
+        var userbuf = User.decode(message); 
+        console.log(userbuf.uname); 
+ 
+        broadcast(message,ws); 
+    }); 
+     
+    ws.on('close', function(){ 
+        global.gc();    //调用内存回收 
+        console.log("leave"); 
+    }); 
+}); 
+ 
+function broadcast(msg,socket){ 
+    for(var key in clientMap){ 
+        clientMap[key].send(msg); 
+    } 
+} 
+
+//带内存回收运行：node --expose-gc WsServer.js   //让global.gc()可以执行
+ 
+8.项目/public下创建user.proto 
+package protobuf; 
+  
+message User { 
+  required int32 uid = 1; 
+  required string uname = 2; 
+  required string pwd = 3; 
+} 
+ 
+9.编译成userproto1.js 
+pbjs user.proto -t commonjs > userproto.js 
+//没有pbjs别处安装并编译，拷贝过来 
+ 
+9.运行：npm start 
+ 
+10.浏览器访问:http://localhost:3000/socketclient
+
+
+
+进群交流QQ群号: 168108911
