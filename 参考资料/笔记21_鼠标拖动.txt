@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    div{
+        position:absolute;
+        width:200px;
+        height:200px;
+    }
+  </style>
+  <script>
+    function DivMove(){
+        var flag=0;
+        var dx=0;
+        var dy=0;
+        this.onmousedown=function(){
+            var e = event || window.event;
+            dx=e.screenX-parseInt(this.style.left);
+            dy=e.screenY-parseInt(this.style.top);
+            flag=1;
+        }
+        var thisa=this;
+        document.onmousemove=function(){
+            if(flag==1){
+                var e = event || window.event;
+                thisa.style.left=e.screenX-dx+'px';
+                thisa.style.top=e.screenY-dy+'px';
+            }
+        }
+        this.onmouseup=function(e){
+            flag=0;
+        }
+    }
+    window.onload=function(){
+        var d1 = document.getElementById('d1');
+        DivMove.apply(d1);
+    }
+  </script>
+ </head>
+ <body>
+  <div id='d1' style='background:red;left:100px;top:100px;'></div>
+  <div id='d2' style='background:green;left:200px;top:200px;'></div>
+  <div id='d3' style='background:blue;left:300px;top:300px;'></div>
+ </body>
+</html>    
+
+进群交流QQ群号: 168108911

@@ -27,3 +27,5 @@ function broadcast(msg, socket){
         clientMap[key].send( msg);
     }
 }
+
+console.log("WsServer startd at port 9000");

@@ -4,9 +4,11 @@
 <script src="./js/bytebuffer.min.js"></script>
 <script src="./js/protobuf.min.js"></script>
 <script>
+    alert(dcodeIO);
+    alert(dcodeIO.ProtoBuf);
     if (typeof dcodeIO === 'undefined' || !dcodeIO.ProtoBuf) {
-        alert('出错');
-        throw(new Error("ProtoBuf.js is not present. Please see www/index.html for manual setup instructions."));
+        alert('Error');
+        //throw(new Error("ProtoBuf.js is not present. Please see www/index.html for manual setup instructions."));
     }
     // 创建ProtoBuf
     var ProtoBuf = dcodeIO.ProtoBuf;

@@ -60,6 +60,12 @@ router.post('/uploadImg',function(req,res){
     });
     //-----------------------------------------
     //res.send('上传');
+
+
+});
+
+router.get('/wsclient',function(req, res){
+    res.render('WsClient');
 });
 
 module.exports = router;

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="/js/long.min.js"></script>
+    <script src="/js/bytebuffer.min.js"></script>
+    <script src="/js/protobuf.min.js"></script>
+    <script>
+        alert(dcodeIO);
+        alert(dcodeIO.ProtoBuf);
+
+        if (typeof dcodeIO === 'undefined' || !dcodeIO.ProtoBuf) {
+            alert('出错');
+            //throw(new Error("ProtoBuf.js is not present. Please see www/index.html for manual setup instructions."));
+        }
+        // 创建ProtoBuf
+        var ProtoBuf = dcodeIO.ProtoBuf;
+        var UserModel = ProtoBuf.loadProtoFile("/js/user.proto").build('protobuf.User');
+        user = new UserModel();
+        user.uid=111;
+        user.uname='pwpwpw';
+        user.pwd='aaa';
+        alert(user.pwd);
+        //------发送代码-------
+        //var buffer = user.toArrayBuffer(); //编码
+        var buffer = user.encode().toBuffer();
+    </script>
+    <script src="/js/WsClient.js"></script>
+
+    <script>
+        function say(){
+            ws.send(myform.sayinput.value);
+            myform.sayinput.value = '';
+        }
+    </script>
+</head>
+<body>
+<h1>WebSocket</h1>
+<div id='chatroom' style='width:400px;height:300px;overflow:auto;border:1px solid blue'></div>
+<form name="myform">
+    <input type='text' name='sayinput'/>
+    <input type='button' value='say' onclick='say()'/>
+</form>
+</body>
+</html>
