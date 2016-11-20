@@ -1,65 +1,84 @@
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <!-- <script src="./js/jquery-1.3.1.min.js"></script> -->
+<html>  
+<head>  
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+    <style>
+    div{
+        position:absolute;
+        width:100px;
+        height:100px;
+    }
+  </style>
+    <!-- <script src="./js/jquery-1.3.1.min.js"></script> -->  
     <script src="/js/socket.io.js"></script>
-    <script src="/js/long.min.js"></script>
-    <script src="/js/bytebuffer.min.js"></script>
+    <script src="/js/long.min.js"></script> 
+    <script src="/js/bytebuffer.min.js"></script> 
     <script src="/js/protobuf.min.js"></script>
     <script>
-        alert(dcodeIO);
-        alert(dcodeIO.ProtoBuf);
-
-        if (typeof dcodeIO === 'undefined' || !dcodeIO.ProtoBuf) {
-            alert('出错');
-            //throw(new Error("ProtoBuf.js is not present. Please see www/index.html for manual setup instructions."));
+    if (typeof dcodeIO === 'undefined' || !dcodeIO.ProtoBuf) {
+        alert('出错');
+    }
+    // 创建ProtoBuf
+    var ProtoBuf = dcodeIO.ProtoBuf;
+    var MoveMsg = ProtoBuf.loadProtoFile("/js/user.proto").build('protobuf.MoveMsg');
+    var mMsg=new MoveMsg();
+    var iosocket = null;
+    window.onload=function(){
+        iosocket = io.connect('http://localhost:9000/'); 
+        iosocket.on('connect', function () { 
+         alert('连接成功');
+        });
+        iosocket.on('message', function(message) { 
+        var moveMsg = MoveMsg.decode(message);
+        var typeid=moveMsg.typeid;
+        var divid= 'd'+moveMsg.divid;
+        var movediv = document.getElementById(divid);
+        if(typeid==0){ //表示移动div
+           movediv.style.left=moveMsg.x+'px';
+           movediv.style.top = moveMsg.y+'px';
+        }else if(typeid==1){//表示指明可移动的div
+           DivMove.apply(movediv);
+           mMsg.typeid=0;
+           mMsg.divid=moveMsg.divid;
         }
-        // 创建ProtoBuf
-        var ProtoBuf = dcodeIO.ProtoBuf;
-        var UserModel = ProtoBuf.loadProtoFile("/js/user.proto").build('protobuf.User');
-        user = new UserModel();
-        user.uid=111;
-        user.uname='张三';
-        user.pwd='aaa';
-        //alert(user.pwd);
-        //------发送代码-------
-        //var buffer = user.toArrayBuffer(); //编码
-        var buffer = user.encode().toBuffer(); //
-    </script>
-
-    <script>
-        var iosocket = null;
-        window.onload=function(){
-            iosocket = io.connect('http://localhost:9000/');
-            iosocket.on('connect', function () {
-                alert('连接成功');
-                //iosocket.send('hello,我是ioclient');
+             });  
+         iosocket.on('disconnect', function() {  
+                    alert('服务端关闭');  
+             });  
+     }
+     function DivMove(){
+        var flag=false;
+        var dx=0;
+        var dy=0;
+        this.onmousedown=function(){
+            var e = event||window.event;
+            dx = e.x-parseInt(this.style.left);
+            dy = e.y-parseInt(this.style.top);
+            this.flag=true;
+        }
+        var thisa=this;
+        document.onmousemove=function(){
+            if(thisa.flag){
+                var e = event||window.event;
+                var xx = e.x-dx;
+                var yy = e.y-dy;
+                thisa.style.left=xx+'px';
+                thisa.style.top=yy+'px';
+                
+                mMsg.x=xx;
+                mMsg.y=yy;
+                var buffer = mMsg.encode().toBuffer();
                 iosocket.send(buffer);
-            });
-            iosocket.on('message', function(message) {
-                //alert('服务端传来:'+message);
-                var chatroom = document.getElementById('chatroom');
-                //chatroom.innerHTML += message+'<br/>';
-                var user = UserModel.decode(message);
-                chatroom.innerHTML += '<br/>' + user.uname;
-            });
-            iosocket.on('disconnect', function() {
-                alert('服务端关闭');
-            });
+            }
         }
-        function say(){
-            user.uname = myform.sayinput.value;
-            var buffer = user.encode().toBuffer();
-            iosocket.send(buffer);
-            myform.sayinput.value = '';
+        this.onmouseup=function(){
+            this.flag=false
         }
+     }
     </script>
 </head>
 <body>
-<div id='chatroom' style='width:400px;height:300px;overflow:auto;border:1px solid blue'></div>
-<form name="myform">
-    <input type='text' name='sayinput'/>
-    <input type='button' value='say' onclick='say()'/>
-</form>
+  <div id='d1' style='background:red;left:100px;top:100px;'></div>
+  <div id='d2' style='background:green;left:200px;top:200px;'></div>
+  <div id='d3' style='background:blue;left:300px;top:300px;'></div>
 </body>
 </html>

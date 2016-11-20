@@ -3,7 +3,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var  fs=  require('fs');
 var ProtoBuf = require("protobufjs");
-var User = require('./userproto.js')['protobuf']['User'];
+var MoveMsg = require('./userproto.js')['protobuf']['MoveMsg'];
 
 //----------------httpServer设置
 app.get('/', function(req, res){
@@ -46,10 +46,15 @@ var ii=0;
 io.on('connection', function(socket){
     console.log('有人连上来了');
     //监听新用户加入
-//    socket.on('login', function(obj) {
-        socket.name = ++ii;
-        onlineUsers[socket.name] = socket;
-//    });
+    socket.name = ++ii;
+    onlineUsers[socket.name] = socket;
+    var moveMsg = new MoveMsg();
+    moveMsg.typeid=1;
+    moveMsg.divid=socket.name;
+    moveMsg.x=0;
+    moveMsg.y=0;
+    var buffer = moveMsg.encode().toBuffer();
+    socket.send(buffer);
 
     //监听用户退出
     socket.on('disconnect', function(){
@@ -62,8 +67,8 @@ io.on('connection', function(socket){
         //向所有客户端广播发布的消息
        //console.log(socket.username+'说：'+msg);
 
-        var userbuf = User.decode(msg);
-        console.log(userbuf.uname);
+       // var userbuf = User.decode(msg);
+       // console.log(userbuf.uname);
 
        sayall(msg,socket);
     });
@@ -72,9 +77,9 @@ io.on('connection', function(socket){
 
 function sayall(msg,socket){
     for(var key in onlineUsers){
-       // if(onlineUsers[key]!=socket){
+        if(onlineUsers[key] != socket){
             onlineUsers[key].send(msg);
-        //}
+        }
     }
 }
 

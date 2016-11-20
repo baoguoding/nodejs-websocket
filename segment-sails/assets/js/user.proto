@@ -4,3 +4,10 @@ message User {
     required string uname = 2;
     required string pwd = 3;
 }
+
+message MoveMsg {
+    required int32 typeid = 1[default=0];
+    required int32 divid = 2;
+    required int32 x = 3;
+    required int32 y = 4;
+}
