@@ -1,0 +1,55 @@
+<%- include header %>
+<div style="width:1024px;margin:1em auto;">
+    <div style="border:1px solid green;width:720px;float:left">
+        <table class="table" align="center">
+            <tbody class="answer">
+            <%
+            if(rs!=undefined){
+                    rs.forEach(function(row){
+            %>
+            <tr>
+                <td>
+                    <div><%=row['renum']%><br/>回答</div>
+                </td>
+                <td><%=row['looknum']%><br/>浏览</td>
+                <td><a href="/question/detail?qid=<%=row['qid']%>" target="_blank"><%=row['title']%></a></td>
+            </tr>
+            <%      })
+            }
+                    if(count>0){
+            %>
+            <tr>
+                <td colspan="3" align="center">
+                    总共<%=count%>条记录,
+                    第<%=page%>/<%=countPage%>页,
+                    <% if(page!=1){%>
+                    <a href="/main/search?page=1&keyword=<%=req.query['keyword']%>&searchkey=<%=req.query['searchkey']%>">首页</a>&nbsp;
+                    <a href="/main/search?page=<%=(page-1)%>&keyword=<%=req.query['keyword']%>&searchkey=<%=req.query['searchkey']%>">上一页</a>&nbsp;
+                    <% } %>
+                    <% if(page!=countPage) {%>
+                    <a href="/main/search?page=<%=(page+1)%>&keyword=<%=req.query['keyword']%>&searchkey=<%=req.query['searchkey']%>">下一页</a>&nbsp;
+                    <a href="/main/search?page=<%=countPage%>&keyword=<%=req.query['keyword']%>&searchkey=<%=req.query['searchkey']%>">尾页</a>
+                    <%}%>
+                </td>
+            </tr>
+            <%
+            }
+            %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-----------------------登录注册模态框----------->
+<div class="modal fade" id="loginModal" style="width: 1080px;">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width: 860px;">
+            <!--------href内容----------------->
+
+
+            <!--------------------------------->
+        </div>
+    </div>
+</div>
+</body>
+</html>
