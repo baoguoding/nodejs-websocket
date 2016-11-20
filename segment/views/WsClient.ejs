@@ -5,8 +5,8 @@
     <script src="/js/bytebuffer.min.js"></script>
     <script src="/js/protobuf.min.js"></script>
     <script>
-       // alert(dcodeIO);
-        alert(dcodeIO.ProtoBuf);
+        //alert(dcodeIO);
+        //alert(dcodeIO.ProtoBuf);
 
         if (typeof dcodeIO === 'undefined' || !dcodeIO.ProtoBuf) {
             alert('出错');
@@ -17,18 +17,20 @@
         var UserModel = ProtoBuf.loadProtoFile("/js/user.proto").build('protobuf.User');
         user = new UserModel();
         user.uid=111;
-        user.uname='pwpwpw';
+        user.uname='张三';
         user.pwd='aaa';
-        alert(user.pwd);
+        //alert(user.pwd);
         //------发送代码-------
         //var buffer = user.toArrayBuffer(); //编码
-        var buffer = user.encode().toBuffer();
+        var buffer = user.encode().toBuffer(); //
     </script>
     <script src="/js/WsClient.js"></script>
 
     <script>
         function say(){
-            ws.send(myform.sayinput.value);
+            user.uname = myform.sayinput.value;
+            var buffer = user.encode().toBuffer();
+            ws.send(buffer);
             myform.sayinput.value = '';
         }
     </script>

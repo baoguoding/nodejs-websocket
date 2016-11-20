@@ -7,9 +7,17 @@ ws.onopen = function() {
 
 //服务端传来的消息
 ws.onmessage = function (evt) {
-    //alert(evt.data);
+    //alert(buffer);
     var chatroom = document.getElementById('chatroom');
-    chatroom.innerHTML += '<br/>' +evt.data;
+    //alert(evt.data);
+    var fr = new FileReader();
+    fr.onload = function(){
+        var ab = this.result;
+        var user = UserModel.decode(ab);
+        chatroom.innerHTML += '<br/>' + user.uname;
+    }
+    fr.readAsArrayBuffer(evt.data);
+    //chatroom.innerHTML += '<br/>' +evt.data;
 };
 
 //服务端关闭
