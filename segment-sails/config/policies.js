@@ -32,7 +32,8 @@ module.exports.policies = {
     MainController:{
       'index':true,
       'logout':true,
-      'search':true
+      'search':true,
+        'sioclient':true
     },
     UsersController:{
         'zhuce':true,

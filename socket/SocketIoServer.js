@@ -2,7 +2,8 @@ var app = require('express')(); //用来做HTTP Server
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var  fs=  require('fs');
-
+var ProtoBuf = require("protobufjs");
+var User = require('./userproto.js')['protobuf']['User'];
 
 //----------------httpServer设置
 app.get('/', function(req, res){
@@ -60,6 +61,10 @@ io.on('connection', function(socket){
     socket.on('message', function(msg){
         //向所有客户端广播发布的消息
        //console.log(socket.username+'说：'+msg);
+
+        var userbuf = User.decode(msg);
+        console.log(userbuf.uname);
+
        sayall(msg,socket);
     });
 
@@ -67,9 +72,9 @@ io.on('connection', function(socket){
 
 function sayall(msg,socket){
     for(var key in onlineUsers){
-        if(onlineUsers[key]!=socket){
+       // if(onlineUsers[key]!=socket){
             onlineUsers[key].send(msg);
-        }
+        //}
     }
 }
 

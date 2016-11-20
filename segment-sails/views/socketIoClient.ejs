@@ -1,0 +1,65 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- <script src="./js/jquery-1.3.1.min.js"></script> -->
+    <script src="/js/socket.io.js"></script>
+    <script src="/js/long.min.js"></script>
+    <script src="/js/bytebuffer.min.js"></script>
+    <script src="/js/protobuf.min.js"></script>
+    <script>
+        alert(dcodeIO);
+        alert(dcodeIO.ProtoBuf);
+
+        if (typeof dcodeIO === 'undefined' || !dcodeIO.ProtoBuf) {
+            alert('出错');
+            //throw(new Error("ProtoBuf.js is not present. Please see www/index.html for manual setup instructions."));
+        }
+        // 创建ProtoBuf
+        var ProtoBuf = dcodeIO.ProtoBuf;
+        var UserModel = ProtoBuf.loadProtoFile("/js/user.proto").build('protobuf.User');
+        user = new UserModel();
+        user.uid=111;
+        user.uname='张三';
+        user.pwd='aaa';
+        //alert(user.pwd);
+        //------发送代码-------
+        //var buffer = user.toArrayBuffer(); //编码
+        var buffer = user.encode().toBuffer(); //
+    </script>
+
+    <script>
+        var iosocket = null;
+        window.onload=function(){
+            iosocket = io.connect('http://localhost:9000/');
+            iosocket.on('connect', function () {
+                alert('连接成功');
+                //iosocket.send('hello,我是ioclient');
+                iosocket.send(buffer);
+            });
+            iosocket.on('message', function(message) {
+                //alert('服务端传来:'+message);
+                var chatroom = document.getElementById('chatroom');
+                //chatroom.innerHTML += message+'<br/>';
+                var user = UserModel.decode(message);
+                chatroom.innerHTML += '<br/>' + user.uname;
+            });
+            iosocket.on('disconnect', function() {
+                alert('服务端关闭');
+            });
+        }
+        function say(){
+            user.uname = myform.sayinput.value;
+            var buffer = user.encode().toBuffer();
+            iosocket.send(buffer);
+            myform.sayinput.value = '';
+        }
+    </script>
+</head>
+<body>
+<div id='chatroom' style='width:400px;height:300px;overflow:auto;border:1px solid blue'></div>
+<form name="myform">
+    <input type='text' name='sayinput'/>
+    <input type='button' value='say' onclick='say()'/>
+</form>
+</body>
+</html>

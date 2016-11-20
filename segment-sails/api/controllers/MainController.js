@@ -69,6 +69,10 @@ module.exports = {
                 res.redirect("/");
             }
         } );
+    },
+    sioclient:function(req, res){
+        res.view('socketIoClient');
+
     }
 };
 
