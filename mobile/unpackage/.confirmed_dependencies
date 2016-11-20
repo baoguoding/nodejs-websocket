@@ -1,0 +1,17 @@
+{
+	"index.html": {
+		"resources": [
+			"js/socket.io.js",
+			"js/user.proto",
+			"js/bytebuffer.min.js",
+			"js/protobuf.min.js",
+			"js/WsClient.js",
+			"js/long.min.js",
+			"/js/bytebuffer.min.js",
+			"/js/protobuf.min.js",
+			"/js/socket.io.js",
+			"/js/long.min.js",
+			"/js/user.proto"
+		]
+	}
+}

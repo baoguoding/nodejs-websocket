@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title></title>
+    
+    <script type="text/javascript">
+    	
+   		document.addEventListener('plusready', function(){
+   			//console.log("所有plus api都应该在此事件发生后调用，否则会出现plus is undefined。"
+   			
+   		});
+   	
+    </script>
+    <script src="./js/long.min.js"></script>
+    <script src="./js/bytebuffer.min.js"></script>
+    <script src="./js/protobuf.min.js"></script>
+    <script>
+        //alert(dcodeIO);
+        //alert(dcodeIO.ProtoBuf);
+
+        if (typeof dcodeIO === 'undefined' || !dcodeIO.ProtoBuf) {
+            alert('出错');
+            //throw(new Error("ProtoBuf.js is not present. Please see www/index.html for manual setup instructions."));
+        }
+        // 创建ProtoBuf
+        var ProtoBuf = dcodeIO.ProtoBuf;
+        var UserModel = ProtoBuf.loadProtoFile("./js/user.proto").build('protobuf.User');
+        user = new UserModel();
+        user.uid=111;
+        user.uname='张三';
+        user.pwd='aaa';
+        //alert(user.pwd);
+        //------发送代码-------
+        //var buffer = user.toArrayBuffer(); //编码
+        var buffer = user.encode().toBuffer(); //
+    </script>
+    <script src="./js/WsClient.js"></script>
+
+    <script>
+        function say(){
+            user.uname = myform.sayinput.value;
+            var buffer = user.encode().toBuffer();
+            ws.send(buffer);
+            myform.sayinput.value = '';
+        }
+    </script>
+</head>
+<body>
+<h1>WebSocket</h1>
+<div id='chatroom' style='width:400px;height:300px;overflow:auto;border:1px solid blue'></div>
+<form name="myform">
+    <input type='text' name='sayinput'/>
+    <input type='button' value='say' onclick='say()'/>
+</form>
+</body>
+</html>
